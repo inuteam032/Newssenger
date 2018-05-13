@@ -34,6 +34,7 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         linearLayout = (LinearLayout)findViewById(R.id.splashActivity_linearLayout);
+        linearLayout.getBackground().setAlpha(50);
 
         // 원격 구성 개체 인스턴스를 가져오고, 캐시를 빈번하게 새로고칠 수 있도록 설정
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
