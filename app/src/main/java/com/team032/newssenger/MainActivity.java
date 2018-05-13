@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.team032.newssenger.model.ChatMessage;
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 String message = mMessageEditText.getText().toString().trim();
 
                 if (!message.equals("")) {
-                    ChatMessage chatMessage = new ChatMessage(message, "user");
+                    ChatMessage chatMessage = new ChatMessage(message, "user", ServerValue.TIMESTAMP);
                     mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
 
                     aiRequest.setQuery(message);
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             if (response != null) {
                                 Result result = response.getResult();
                                 String reply = result.getFulfillment().getSpeech();
-                                ChatMessage chatMessage = new ChatMessage(reply, "bot");
+                                ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
                                 mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
                             }
                         }
@@ -317,11 +318,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Result result = response.getResult();
 
         String message = result.getResolvedQuery();
-        ChatMessage chatMessage0 = new ChatMessage(message, "user");
+        ChatMessage chatMessage0 = new ChatMessage(message, "user", ServerValue.TIMESTAMP);
         mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage0);
 
         String reply = result.getFulfillment().getSpeech();
-        ChatMessage chatMessage = new ChatMessage(reply, "bot");
+        ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
         mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
     }
 
