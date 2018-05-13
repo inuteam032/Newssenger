@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,7 +17,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private LinearLayout linearLayout;
+    private RelativeLayout relativeLayout;
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
@@ -33,8 +33,8 @@ public class SplashActivity extends AppCompatActivity {
         // 상단 Status Bar 없애기
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        linearLayout = (LinearLayout)findViewById(R.id.splashActivity_linearLayout);
-        linearLayout.getBackground().setAlpha(50);
+        relativeLayout = (RelativeLayout)findViewById(R.id.splashActivity_relativeLayout);
+        relativeLayout.getBackground().setAlpha(50);
 
         // 원격 구성 개체 인스턴스를 가져오고, 캐시를 빈번하게 새로고칠 수 있도록 설정
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
