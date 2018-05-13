@@ -15,7 +15,7 @@
         android:padding="8dp"
         android:textColor="#212121"
         android:background="@drawable/left_background"
-        android:elevation="2dp" />
+        android:elevation="1dp" />
 
 
     <TextView
@@ -26,9 +26,9 @@
         android:layout_alignParentEnd="true"
         android:text="right"
         android:background="@drawable/right_background"
-        android:textColor="#fff"
+        android:textColor="#212121"
         android:padding="8dp"
-        android:elevation="2dp"/>
+        android:elevation="1dp"/>
 
         <Space
         android:layout_width="match_parent"

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#fdc1cd</color> <!--Action Bar-->
+    <color name="colorPrimaryDark">#F4ACB7</color> <!--Status Bar-->
+    <color name="colorAccent">#9D8189</color>
+    <color name="leftText">#FFFFFF</color>
+    <color name="rightText">#D8E2DC</color>
 </resources>
