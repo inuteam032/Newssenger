@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     holder.rightText.setText(model.getText());
                     holder.rightText.setVisibility(View.VISIBLE);
                     holder.leftText.setVisibility(View.GONE);
+                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
                 }
 
                 //챗봇이 말할 때
@@ -190,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     holder.leftText.setText(model.getText());
                     holder.rightText.setVisibility(View.GONE);
                     holder.leftText.setVisibility(View.VISIBLE);
+                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
 
                     holder.leftText.setOnClickListener(new View.OnClickListener() {
                         @Override
