@@ -2,6 +2,7 @@ package com.team032.newssenger;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,9 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -178,13 +181,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         // 어댑터 - 뷰
         mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage, chat_rec>(options) {
+
+            // Allows to remember the last item shown on screen
+//            private int lastPosition = -1;
+
             @Override
             protected void onBindViewHolder(@NonNull chat_rec holder, int position, @NonNull final ChatMessage model) {
                 if (model.getName().equals("user")) {
                     holder.rightText.setText(model.getText());
                     holder.rightText.setVisibility(View.VISIBLE);
                     holder.leftText.setVisibility(View.GONE);
-                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
+//                    setAnimation(holder.rightText, position);
+//                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
                 }
 
                 //챗봇이 말할 때
@@ -192,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     holder.leftText.setText(model.getText());
                     holder.rightText.setVisibility(View.GONE);
                     holder.leftText.setVisibility(View.VISIBLE);
-                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
+//                    setAnimation(holder.leftText, position);
+//                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
 
                     holder.leftText.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -225,10 +234,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @NonNull
             @Override
             public chat_rec onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(item_message, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(item_message, parent, false);
                 return new chat_rec(view);
             }
+
+//            private void setAnimation(View viewToAnimate, int position) {
+//                // If the bound view wasn't previously displayed on screen, it's animated
+//                if (position > lastPosition) {
+//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.slide_in_left);
+//                    viewToAnimate.startAnimation(animation);
+//                    lastPosition = position;
+//                }
+//            }
+//
+//            private void setAnimationLeft(View viewToAnimate, int position) {
+//                // If the bound view wasn't previously displayed on screen, it's animated
+//                if (position > lastPosition) {
+//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_chat_left);
+//                    viewToAnimate.startAnimation(animation);
+//                    lastPosition = position;
+//                }
+//            }
+//
+//            private void setAnimationRight(View viewToAnimate, int position) {
+//                // If the bound view wasn't previously displayed on screen, it's animated
+//                if (position > lastPosition) {
+//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_chat_right);
+//                    viewToAnimate.startAnimation(animation);
+//                    lastPosition = position;
+//                }
+//            }
         };
 
         // 리사이클러뷰에 레이아웃 매니저와 어댑터 설정
@@ -301,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         public void run() {
                             mMessageRecyclerView.smoothScrollToPosition(mFirebaseAdapter.getItemCount());
                         }
-                    }, 100);
+                    }, 0);
                 }
             }
         });

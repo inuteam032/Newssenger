@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,11 +25,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        hideActionBar();    // 처음 진입화면(splash)에서 ActionBar 가림
+
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.action_bar);
 
         // 상단 Status Bar 없애기
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         linearLayout = (LinearLayout)findViewById(R.id.splashActivity_linearLayout);
 
@@ -54,6 +57,15 @@ public class SplashActivity extends AppCompatActivity {
                         displayMessage();
                     }
                 });
+    }
+
+    // ActionBar를 안보이게 함
+    private void hideActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     void displayMessage() {
