@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,8 +30,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -67,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     //데이터베이스 사용
     DatabaseReference mFirebaseDatabaseReference;
     EditText mMessageEditText; //메세지 받는 곳, =edittext
-    Button send_button;
+    RelativeLayout send_button;
+    TextView next;
 
     //길이 제한 추가
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -84,10 +89,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     //로그아웃
     private FirebaseAuth mFirebaseAuth;
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(activity_main);
+        //initView();
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(layout.action_bar);
@@ -169,6 +176,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        //        //더보기 버튼
+//        next.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("StaticFieldLeak")
+//            @Override
+//            public void onClick(View view) {
+//                ChatMessage chatMessage = new ChatMessage(user_msg, "user");
+//                mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+//
+//                aiRequest.setQuery(user_msg);
+//                new AsyncTask<AIRequest, Void, AIResponse>(){
+//                    @Override
+//                    protected AIResponse doInBackground(AIRequest... aiRequests) {
+//                        final AIRequest request = aiRequests[0];
+//                        try {
+//                            final AIResponse response = aiDataService.request(aiRequest);
+//                            return response;
+//                        }
+//                        catch (AIServiceException e) {
+//
+//                        }
+//                        return null;
+//                    }
+//                    @Override
+//                    protected void onPostExecute(AIResponse response) {
+//                        if (response != null) {
+//                            Result result = response.getResult();
+//                            String reply = result.getFulfillment().getSpeech();
+//                            ChatMessage chatMessage = new ChatMessage(reply, "bot");
+//                            mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+//                        }
+//                    }
+//                }.execute(aiRequest);
+//            }
+//        });
+
 // ------------------------------- 뷰에 메세지 띄우기 -------------------------------- //
 
         // 쿼리 수행 위치
@@ -186,48 +228,171 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //            private int lastPosition = -1;
 
             @Override
-            protected void onBindViewHolder(@NonNull chat_rec holder, int position, @NonNull final ChatMessage model) {
+            protected void onBindViewHolder(final chat_rec holder, int position, @NonNull final ChatMessage model) {
                 if (model.getName().equals("user")) {
                     holder.rightText.setText(model.getText());
                     holder.rightText.setVisibility(View.VISIBLE);
                     holder.leftText.setVisibility(View.GONE);
 //                    setAnimation(holder.rightText, position);
 //                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
+
+                    holder.imgPreviewIv.setVisibility(View.GONE);
+                    holder.titleTv.setVisibility(View.GONE);
+                    holder.descTv.setVisibility(View.GONE);
+                    holder.siteTv.setVisibility(View.GONE);
+                    holder.previewGroup.setVisibility(View.GONE);
+
+                    //quick
+                    holder.next.setVisibility(View.GONE);
+                    holder.more.setVisibility(View.GONE);
                 }
 
                 //챗봇이 말할 때
                 else {
-                    holder.leftText.setText(model.getText());
+                    //split
+                    String chatbot_msg = model.getText();
+                    String[] value = chatbot_msg.split("@");
+                    int value_length = value.length;
+
+                    if(!value[1].equals("null")) {
+                        holder.leftText.setText(value[1]);
+                    }
+                    else {
+                        holder.leftText.setText(value[0]);
+                    }
+
                     holder.rightText.setVisibility(View.GONE);
                     holder.leftText.setVisibility(View.VISIBLE);
 //                    setAnimation(holder.leftText, position);
 //                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
 
-                    holder.leftText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Uri uri = Uri.parse(model.getText());
+                    holder.imgPreviewIv.setVisibility(View.GONE);
+                    holder.titleTv.setVisibility(View.GONE);
+                    holder.descTv.setVisibility(View.GONE);
+                    holder.siteTv.setVisibility(View.GONE);
+                    holder.previewGroup.setVisibility(View.GONE);
 
-                            // create an intent builder
-                            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+                    holder.next.setVisibility(View.GONE);
+                    holder.more.setVisibility(View.GONE);
+                    //holder.previewGroup.setVisibility(View.GONE);
 
-                            // Begin customizing
-                            // set toolbar colors
-                            intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
-                            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+                    if(value_length >= 2 && !value[1].equals("null")) {
+                        final Uri uri = Uri.parse(value[0]); //링크만 저장
 
-                            // set start and exit animations
-                            intentBuilder.setStartAnimations(MainActivity.this, R.anim.slide_in_right, R.anim.slide_out_left);
-                            intentBuilder.setExitAnimations(MainActivity.this, R.anim.slide_in_left,
-                                    R.anim.slide_out_right);
+                        holder.next.setVisibility(View.VISIBLE);
+                        holder.more.setVisibility(View.VISIBLE);
 
-                            // build custom tabs intent
-                            CustomTabsIntent customTabsIntent = intentBuilder.build();
+                        //같은 분야의 다른 뉴스 계속 보여주게 바꾸기
+                        holder.next.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                holder.next.setVisibility(View.GONE);
+                                holder.more.setVisibility(View.GONE);
 
-                            // launch the url
-                            customTabsIntent.launchUrl(MainActivity.this, uri);
-                        }
-                    });
+                            }
+                        });
+
+                        //quick
+                        holder.more.setOnClickListener(new View.OnClickListener() {
+                            //preview 링크 클릭 시 이동
+                            @Override
+                            public void onClick(View v) {
+                                holder.progress.setVisibility(View.VISIBLE);
+                                LinkUtil.getLinkPreview(MainActivity.this, String.valueOf(uri), new GetLinkPreviewListener() {
+                                    @Override
+                                    public void onSuccess(final ChatMessage link) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                holder.progress.setVisibility(View.GONE);
+                                                holder.imgPreviewIv.setVisibility(View.VISIBLE);
+                                                holder.titleTv.setVisibility(View.VISIBLE);
+                                                holder.descTv.setVisibility(View.VISIBLE);
+                                                holder.siteTv.setVisibility(View.VISIBLE);
+                                                holder.previewGroup.setVisibility(View.VISIBLE);
+
+                                                holder.titleTv.setText(link.getTitle() != null ? link.getTitle() : "");
+                                                holder.descTv.setText(link.getDescription() != null ? link.getDescription() : "");
+                                                holder.siteTv.setText(link.getSiteName() != null ? link.getSiteName() : "");
+
+                                                holder.next.setVisibility(View.GONE);
+                                                holder.more.setVisibility(View.GONE);
+
+                                                holder.previewGroup.setOnClickListener(new View.OnClickListener() {
+                                                    //preview 링크 클릭 시 이동
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+                                                        intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimaryDark));
+                                                        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimary));
+
+                                                        intentBuilder.setStartAnimations(MainActivity.this, anim.slide_in_right, anim.slide_out_left);
+                                                        intentBuilder.setExitAnimations(MainActivity.this, anim.slide_in_left,
+                                                                anim.slide_out_right);
+
+                                                        CustomTabsIntent customTabsIntent = intentBuilder.build();
+                                                        customTabsIntent.launchUrl(MainActivity.this, uri);
+                                                    }
+                                                });
+
+                                                if (link.getImageFile() != null)
+                                                    Glide.with(MainActivity.this).load(link.getImageFile()).into(holder.imgPreviewIv);
+                                                else
+                                                    Glide.with(MainActivity.this).load(mipmap.ic_launcher).into(holder.imgPreviewIv);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailed(final Exception e) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                holder.progress.setVisibility(View.GONE);
+                                                holder.imgPreviewIv.setVisibility(View.GONE);
+                                                holder.titleTv.setVisibility(View.GONE);
+                                                holder.descTv.setVisibility(View.GONE);
+                                                holder.siteTv.setVisibility(View.GONE);
+
+                                                holder.next.setVisibility(View.GONE);
+                                                holder.more.setVisibility(View.GONE);
+
+                                                //holder.previewGroup.setVisibility(View.GONE);
+                                                //Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }); //quick
+                    } //링크 빼내기
+
+//                    holder.leftText.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Uri uri = Uri.parse(model.getText());
+//
+//                            // create an intent builder
+//                            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+//
+//                            // Begin customizing
+//                            // set toolbar colors
+//                            intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
+//                            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+//
+//                            // set start and exit animations
+//                            intentBuilder.setStartAnimations(MainActivity.this, R.anim.slide_in_right, R.anim.slide_out_left);
+//                            intentBuilder.setExitAnimations(MainActivity.this, R.anim.slide_in_left,
+//                                    R.anim.slide_out_right);
+//
+//                            // build custom tabs intent
+//                            CustomTabsIntent customTabsIntent = intentBuilder.build();
+//
+//                            // launch the url
+//                            customTabsIntent.launchUrl(MainActivity.this, uri);
+//                        }
+//                    });
                 }
             }
 
@@ -282,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         .build();
 
         Map<String, Object> defaultConfigMap = new HashMap<>();
-        defaultConfigMap.put("message_length", 10L);    // 글자수 제한
+        defaultConfigMap.put("message_length", 50L);    // 글자수 제한
 
         mFirebaseRemoteConfig.setConfigSettings(firebaseRemoteConfigSettings);
         mFirebaseRemoteConfig.setDefaults(defaultConfigMap);

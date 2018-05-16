@@ -2,6 +2,8 @@ package com.team032.newssenger.model;
 
 import com.google.firebase.database.ServerValue;
 
+import java.io.File;
+
 public class ChatMessage {
 
     private String id;          // DB에 저장할 ID
@@ -11,6 +13,9 @@ public class ChatMessage {
 
     //private String photoUrl;    // 프로필 사진 경로
     //private String imageUrl;    // 첨부 이미지 경로
+
+    private String title, description, link, siteName;
+    private File imageFile;
 
     public ChatMessage(){
 
@@ -73,4 +78,44 @@ public class ChatMessage {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }  */
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public File getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(File imageFile) {
+        this.imageFile = imageFile;
+    }
 }

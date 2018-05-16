@@ -18,6 +18,13 @@ android {
     }
 }
 
+//preview add
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
@@ -53,6 +60,12 @@ dependencies {
     implementation 'com.android.support:customtabs:27.1.1'
 
     implementation 'saschpe.android:customtabs:1.1.1'
+
+    //preview add
+    //implementation project(':linkpreview')
+    //implementation 'com.github.omegaes:Android-Link-Preview:1.0.2'
+    implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

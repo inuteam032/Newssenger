@@ -5,36 +5,155 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/leftText"
-        android:layout_width="wrap_content"
-        android:maxWidth="300dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_alignParentStart="true"
-        android:text="left"
-        android:padding="15dp"
-        android:textColor="#212121"
-        android:background="@drawable/left_background"
-        android:elevation="1dp" />
+    <RelativeLayout
+        android:id="@+id/leftText_layout"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/leftText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/left_background"
+            android:elevation="2dp"
+            android:padding="15dp"
+            android:text="left"
+            android:textColor="#212121" />
+    </RelativeLayout>
+
+    <!--preview add-->
+    <RelativeLayout
+        android:id="@+id/previewGroup"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/leftText_layout"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/left_background"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/img_preview_iv"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/site_tv"
+            android:textColor="#212121"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/desc_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/title_tv"
+            android:maxLength="200"
+            android:textColor="#212121"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/site_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/img_preview_iv"
+            android:background="@drawable/left_background"
+            android:textColor="#212121"
+            android:textSize="10sp" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/rightText"
         android:layout_width="wrap_content"
-        android:maxWidth="200dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginEnd="20dp"
         android:layout_alignParentEnd="true"
-        android:text="right"
+        android:layout_margin="10dp"
         android:background="@drawable/right_background"
-        android:textColor="#212121"
+        android:elevation="2dp"
         android:padding="15dp"
-        android:elevation="1dp"/>
+        android:text="right"
+        android:textColor="#8c8a8a" />
 
-        <Space
+    <TextView
+        android:id="@+id/more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="38dp"
+        android:layout_below="@id/leftText_layout"
+        android:background="@drawable/quick_button"
+        android:elevation="2dp"
+        android:padding="8dp"
+        android:text="이 뉴스를 더 보고싶어요 😀"
+        android:textColor="#fff" />
+
+    <TextView
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/leftText_layout"
+        android:background="@drawable/quick_button"
+        android:elevation="2dp"
+        android:padding="8dp"
+        android:text="다음 뉴스를 볼래요 🙅"
+        android:textColor="#fff" />
+
+    <Space
         android:layout_width="match_parent"
         android:layout_height="10dp" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="54dp"
+        android:indeterminate="false"
+        android:visibility="gone" />
+    <!--<TextView-->
+        <!--android:id="@+id/leftText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:maxWidth="300dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_marginStart="20dp"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:text="left"-->
+        <!--android:padding="15dp"-->
+        <!--android:textColor="#212121"-->
+        <!--android:background="@drawable/left_background"-->
+        <!--android:elevation="1dp" />-->
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/rightText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:maxWidth="200dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_marginEnd="20dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:text="right"-->
+        <!--android:background="@drawable/right_background"-->
+        <!--android:textColor="#212121"-->
+        <!--android:padding="15dp"-->
+        <!--android:elevation="1dp"/>-->
+
+        <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="10dp" />-->
 </RelativeLayout>
