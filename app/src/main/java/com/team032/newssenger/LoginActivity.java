@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.signOut();
 
-        String splash_background = firebaseRemoteConfig.getString(getString(R.string.rc_color));
+        String login_button_background = firebaseRemoteConfig.getString(getString(R.string.login_button_background));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //getWindow().setStatusBarColor(Color.parseColor(splash_background));
         }
@@ -52,8 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
         login = (Button)findViewById(R.id.loginActivity_button_login);
         signup = (Button)findViewById(R.id.loginActivity_button_signup);
-        login.setBackgroundColor(Color.parseColor(splash_background));
-        signup.setBackgroundColor(Color.parseColor(splash_background));
+        login.setBackgroundColor(Color.parseColor(login_button_background));
+        signup.setBackgroundColor(Color.parseColor(login_button_background));
 
         //로그인 버튼
         login.setOnClickListener(new View.OnClickListener() {

@@ -8,11 +8,13 @@
     <TextView
         android:id="@+id/leftText"
         android:layout_width="wrap_content"
+        android:maxWidth="300dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:layout_marginStart="20dp"
         android:layout_alignParentStart="true"
         android:text="left"
-        android:padding="8dp"
+        android:padding="15dp"
         android:textColor="#212121"
         android:background="@drawable/left_background"
         android:elevation="1dp" />
@@ -21,13 +23,15 @@
     <TextView
         android:id="@+id/rightText"
         android:layout_width="wrap_content"
+        android:maxWidth="200dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:layout_marginEnd="20dp"
         android:layout_alignParentEnd="true"
         android:text="right"
         android:background="@drawable/right_background"
         android:textColor="#212121"
-        android:padding="8dp"
+        android:padding="15dp"
         android:elevation="1dp"/>
 
         <Space

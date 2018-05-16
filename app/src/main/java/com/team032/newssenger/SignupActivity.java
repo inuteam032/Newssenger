@@ -55,7 +55,7 @@ public class SignupActivity extends AppCompatActivity {
         signup = (Button)findViewById(R.id.signupActivity_button_signup);
         signup.setBackgroundColor(Color.parseColor(splash_background));
 
-        //회원가입 버튼 클
+        //회원가입 버튼 클릭 시
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

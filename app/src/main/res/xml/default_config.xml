@@ -13,5 +13,9 @@
         <key>splash_message</key>
         <value>Welcome to my awesome app!</value>
     </entry>
+    <entry>
+        <key>login_button_background</key>
+        <value>#242222</value>
+    </entry>
 </defaultsMap>
 <!-- END xml_defaults -->
