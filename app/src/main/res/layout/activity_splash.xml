@@ -11,18 +11,13 @@
     android:orientation="vertical"
     android:background="@drawable/splash_background">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="174dp"
-        android:fontFamily="@font/alexa"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:textColor="#211121"
-        android:textSize="60sp"
-        android:textStyle="bold" />
+        android:background="@drawable/newssenger_logo"/>
 
     <TextView
         android:layout_width="wrap_content"

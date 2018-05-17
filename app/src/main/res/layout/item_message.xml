@@ -18,7 +18,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/left_background"
             android:elevation="2dp"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="left"
             android:textColor="#212121" />
     </RelativeLayout>
@@ -31,7 +31,8 @@
         android:layout_below="@id/leftText_layout"
         android:layout_marginLeft="10dp"
         android:background="@drawable/left_background"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:elevation="2dp">
 
         <ImageView
             android:id="@+id/img_preview_iv"
@@ -79,7 +80,7 @@
         android:layout_margin="10dp"
         android:background="@drawable/right_background"
         android:elevation="2dp"
-        android:padding="15dp"
+        android:padding="12dp"
         android:text="right"
         android:textColor="#8c8a8a" />
 
