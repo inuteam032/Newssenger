@@ -45,6 +45,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.team032.newssenger.model.ChatMessage;
@@ -98,6 +99,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(layout.action_bar);
+
+        // Subscribe Firebase Notification
+        FirebaseMessaging.getInstance().subscribeToTopic("pushNotifications");
+
+//        // Unsubscribe Firebase Notification
+//        FirebaseMessaging.getInstance().unsubscribeFromTopic("pushNotifications");
 
         //음성 입력
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},1);

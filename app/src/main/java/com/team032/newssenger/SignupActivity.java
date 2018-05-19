@@ -34,6 +34,8 @@ public class SignupActivity extends AppCompatActivity {
     //private ImageView profile;
     //private Uri imageUri;
 
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,18 +44,20 @@ public class SignupActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
 
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         splash_background = mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //getWindow().setStatusBarColor(Color.parseColor(splash_background));
         }
+
+        String login_button_background = mFirebaseRemoteConfig.getString(getString(R.string.login_button_background));
 
         email = (EditText)findViewById(R.id.signupActivity_edittext_email);
         name = (EditText)findViewById(R.id.signupActivity_edittext_name);
         password = (EditText)findViewById(R.id.signupActivity_edittext_password);
         likes = (EditText)findViewById(R.id.signupActivity_edittext_likes);
         signup = (Button)findViewById(R.id.signupActivity_button_signup);
-        signup.setBackgroundColor(Color.parseColor(splash_background));
+        signup.setBackgroundColor(Color.parseColor(login_button_background));
 
         //회원가입 버튼 클릭 시
         signup.setOnClickListener(new View.OnClickListener() {

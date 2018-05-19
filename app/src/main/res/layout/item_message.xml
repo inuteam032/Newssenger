@@ -26,7 +26,7 @@
     <!--preview add-->
     <RelativeLayout
         android:id="@+id/previewGroup"
-        android:layout_width="310dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/leftText_layout"
         android:layout_marginLeft="10dp"
@@ -36,7 +36,7 @@
 
         <ImageView
             android:id="@+id/img_preview_iv"
-            android:layout_width="270dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:gravity="center"

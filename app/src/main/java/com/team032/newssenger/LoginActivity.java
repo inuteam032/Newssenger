@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signOut();
+//        firebaseAuth.signOut();
 
         String login_button_background = firebaseRemoteConfig.getString(getString(R.string.login_button_background));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
