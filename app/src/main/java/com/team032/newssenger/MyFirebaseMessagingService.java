@@ -25,7 +25,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        Log.d(TAG, "onMessageReceived ID: " + remoteMessage.getMessageId());
 //        Log.d(TAG, "onMessageReceived DATA: " + remoteMessage.getData());
 //
-//        // TODO(developer): Handle FCM messages here.
+//        // developer => Handle FCM messages here.
 //        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
 //        Log.d(TAG, "From: " + remoteMessage.getFrom());
 

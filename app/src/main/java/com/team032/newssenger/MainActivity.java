@@ -2,7 +2,6 @@ package com.team032.newssenger;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,17 +18,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -90,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     //로그아웃
     private FirebaseAuth mFirebaseAuth;
 
+    private String prevEditText;
+
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         final AIDataService aiDataService = new AIDataService(config);
         final AIRequest aiRequest = new AIRequest();
 
-
 // ------------------------------- 기본 채팅창 만들기 -------------------------------- //
 
         // 보내기 버튼 (=addBtn)
@@ -147,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onClick(View view) {
                 String message = mMessageEditText.getText().toString().trim();
+                prevEditText = message;
 
                 if (!message.equals("")) {
                     ChatMessage chatMessage = new ChatMessage(message, "user", ServerValue.TIMESTAMP);
@@ -224,34 +220,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Query query = mFirebaseDatabaseReference.child("chat");
 
         // 옵션 - 쿼리 설정 chatmessage 클래스에 결과를 반환한다.
+        // configure the ADAPTER by building FirebaseRecyclerOptions
         FirebaseRecyclerOptions<ChatMessage> options = new FirebaseRecyclerOptions.Builder<ChatMessage>()
                         .setQuery(query, ChatMessage.class)
                         .build();
 
         // 어댑터 - 뷰
+        // chat_rec => ViewHolder (for displaying each item)
         mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage, chat_rec>(options) {
-
             // Allows to remember the last item shown on screen
 //            private int lastPosition = -1;
-
             @Override
             protected void onBindViewHolder(final chat_rec holder, int position, @NonNull final ChatMessage model) {
+                // preview
+                holder.imgPreviewIv.setVisibility(View.GONE);
+                holder.titleTv.setVisibility(View.GONE);
+                holder.descTv.setVisibility(View.GONE);
+                holder.siteTv.setVisibility(View.GONE);
+                holder.previewGroup.setVisibility(View.GONE);
+
+                //quick
+                holder.next.setVisibility(View.GONE);
+                holder.more.setVisibility(View.GONE);
+
+                //유저가 말할 때
                 if (model.getName().equals("user")) {
                     holder.rightText.setText(model.getText());
                     holder.rightText.setVisibility(View.VISIBLE);
                     holder.leftText.setVisibility(View.GONE);
 //                    setAnimation(holder.rightText, position);
 //                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
-
-                    holder.imgPreviewIv.setVisibility(View.GONE);
-                    holder.titleTv.setVisibility(View.GONE);
-                    holder.descTv.setVisibility(View.GONE);
-                    holder.siteTv.setVisibility(View.GONE);
-                    holder.previewGroup.setVisibility(View.GONE);
-
-                    //quick
-                    holder.next.setVisibility(View.GONE);
-                    holder.more.setVisibility(View.GONE);
                 }
 
                 //챗봇이 말할 때
@@ -273,33 +271,54 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //                    setAnimation(holder.leftText, position);
 //                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
 
-                    holder.imgPreviewIv.setVisibility(View.GONE);
-                    holder.titleTv.setVisibility(View.GONE);
-                    holder.descTv.setVisibility(View.GONE);
-                    holder.siteTv.setVisibility(View.GONE);
-                    holder.previewGroup.setVisibility(View.GONE);
-
-                    holder.next.setVisibility(View.GONE);
-                    holder.more.setVisibility(View.GONE);
-                    //holder.previewGroup.setVisibility(View.GONE);
-
                     if(value_length >= 2 && !value[1].equals("null")) {
                         final Uri uri = Uri.parse(value[0]); //링크만 저장
 
                         holder.next.setVisibility(View.VISIBLE);
                         holder.more.setVisibility(View.VISIBLE);
 
-                        //같은 분야의 다른 뉴스 계속 보여주게 바꾸기
                         holder.next.setOnClickListener(new View.OnClickListener() {
+                            @SuppressLint("StaticFieldLeak")
                             @Override
                             public void onClick(View v) {
                                 holder.next.setVisibility(View.GONE);
                                 holder.more.setVisibility(View.GONE);
 
+                                if (!prevEditText.equals("")) {
+//                                    ChatMessage chatMessage = new ChatMessage(prevEditText, "user", ServerValue.TIMESTAMP);
+//                                    mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+
+                                    aiRequest.setQuery(prevEditText);
+                                    new AsyncTask<AIRequest, Void, AIResponse>(){
+                                        @Override
+                                        protected AIResponse doInBackground(AIRequest... aiRequests) {
+                                            final AIRequest request = aiRequests[0];
+                                            try {
+                                                final AIResponse response = aiDataService.request(aiRequest);
+                                                return response;
+                                            }
+                                            catch (AIServiceException e) {
+                                            }
+                                            return null;
+                                        }
+                                        @Override
+                                        protected void onPostExecute(AIResponse response) {
+                                            if (response != null) {
+                                                Result result = response.getResult();
+                                                String reply = result.getFulfillment().getSpeech();
+                                                ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
+                                                mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+                                            }
+                                        }
+                                    }.execute(aiRequest);
+                                }
+                                else {
+                                    aiService.startListening();
+                                }
                             }
                         });
 
-                        //quick
+                        // more: 클릭 시 해당 뉴스의 프리뷰가 나타나도록 함
                         holder.more.setOnClickListener(new View.OnClickListener() {
                             //preview 링크 클릭 시 이동
                             @Override
@@ -329,16 +348,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                                     //preview 링크 클릭 시 이동
                                                     @Override
                                                     public void onClick(View v) {
+                                                        // create an intent builder
                                                         CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
 
+                                                        // Begin customizing
+                                                        // set toolbar colors
                                                         intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimaryDark));
                                                         intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimary));
 
-                                                        intentBuilder.setStartAnimations(MainActivity.this, anim.slide_in_right, anim.slide_out_left);
-                                                        intentBuilder.setExitAnimations(MainActivity.this, anim.slide_in_left,
-                                                                anim.slide_out_right);
+                                                        // set start and exit animations
+                                                        intentBuilder.setStartAnimations( MainActivity.this, anim.slide_in_right, anim.slide_out_left);
+                                                        intentBuilder.setExitAnimations(MainActivity.this, anim.slide_in_left, anim.slide_out_right);
 
+                                                        // build custom tabs intent
                                                         CustomTabsIntent customTabsIntent = intentBuilder.build();
+                                                        // launch the url
                                                         customTabsIntent.launchUrl(MainActivity.this, uri);
                                                     }
                                                 });
@@ -374,32 +398,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             }
                         }); //quick
                     } //링크 빼내기
-
-//                    holder.leftText.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Uri uri = Uri.parse(model.getText());
-//
-//                            // create an intent builder
-//                            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-//
-//                            // Begin customizing
-//                            // set toolbar colors
-//                            intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
-//                            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
-//
-//                            // set start and exit animations
-//                            intentBuilder.setStartAnimations(MainActivity.this, R.anim.slide_in_right, R.anim.slide_out_left);
-//                            intentBuilder.setExitAnimations(MainActivity.this, R.anim.slide_in_left,
-//                                    R.anim.slide_out_right);
-//
-//                            // build custom tabs intent
-//                            CustomTabsIntent customTabsIntent = intentBuilder.build();
-//
-//                            // launch the url
-//                            customTabsIntent.launchUrl(MainActivity.this, uri);
-//                        }
-//                    });
                 }
             }
 
@@ -438,8 +436,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //            }
         };
 
-        // 리사이클러뷰에 레이아웃 매니저와 어댑터 설정
+        // setLayoutManager: 아이템의 배치 방법을 정의함(LinearLayoutManager: 가로/세로)
         mMessageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Attach the ADAPTER to the RecyclerView with the RecyclerView.setAdapter() method
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 // --------------------------------------------------------------------------------------- //
 

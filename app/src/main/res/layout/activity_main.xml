@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="#75f1f1f1"
     tools:context="com.team032.newssenger.MainActivity">
 
     <android.support.v7.widget.RecyclerView
