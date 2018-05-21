@@ -1,6 +1,5 @@
 package com.team032.newssenger;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,17 +27,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseArray;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.ObservableSnapshotArray;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -73,9 +78,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     //뷰 - firebase ui에서 지원
-    //private FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder> mFirebaseAdapter;
+    //private FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder> mFirebaseAdapter_chat;
     //chat_rec == MessageViewHolder
-    FirebaseRecyclerAdapter<ChatMessage, chat_rec> mFirebaseAdapter;
+    FirebaseRecyclerAdapter<ChatMessage, chat_rec> mFirebaseAdapter_chat;
+    FirebaseRecyclerAdapter<ChatMessage, chat_rec> mFirebaseAdapter_notification;
     private RecyclerView mMessageRecyclerView;
 
     //챗봇 추가
@@ -96,15 +102,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(layout.action_bar);
 
-        // Subscribe Firebase Notification
-        FirebaseMessaging.getInstance().subscribeToTopic("pushNotifications");
-
-//        // Unsubscribe Firebase Notification
-//        FirebaseMessaging.getInstance().unsubscribeFromTopic("pushNotifications");
-
-        //음성 입력
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},1);
-
         //로그아웃
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -115,6 +112,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         //데이터베이스
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference(); //ref
         mFirebaseDatabaseReference.keepSynced(true); //추가
+
+        FirebaseApp.initializeApp(this);
+
+        // Subscribe Firebase Notification
+        FirebaseMessaging.getInstance().subscribeToTopic("News_Notifications");
+
+//        // Unsubscribe Firebase Notification
+//        FirebaseMessaging.getInstance().unsubscribeFromTopic("News_Notifications");
 
         //추가
         mMessageRecyclerView.setHasFixedSize(true);
@@ -146,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 if (!message.equals("")) {
                     ChatMessage chatMessage = new ChatMessage(message, "user", ServerValue.TIMESTAMP);
-                    mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+                    mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage);
 
                     aiRequest.setQuery(message);
                     new AsyncTask<AIRequest, Void, AIResponse>(){
@@ -167,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 Result result = response.getResult();
                                 String reply = result.getFulfillment().getSpeech();
                                 ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
-                                mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+                                mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage);
                             }
                         }
                     }.execute(aiRequest);
@@ -179,55 +184,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-        //        //더보기 버튼
-//        next.setOnClickListener(new View.OnClickListener() {
-//            @SuppressLint("StaticFieldLeak")
-//            @Override
-//            public void onClick(View view) {
-//                ChatMessage chatMessage = new ChatMessage(user_msg, "user");
-//                mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
-//
-//                aiRequest.setQuery(user_msg);
-//                new AsyncTask<AIRequest, Void, AIResponse>(){
-//                    @Override
-//                    protected AIResponse doInBackground(AIRequest... aiRequests) {
-//                        final AIRequest request = aiRequests[0];
-//                        try {
-//                            final AIResponse response = aiDataService.request(aiRequest);
-//                            return response;
-//                        }
-//                        catch (AIServiceException e) {
-//
-//                        }
-//                        return null;
-//                    }
-//                    @Override
-//                    protected void onPostExecute(AIResponse response) {
-//                        if (response != null) {
-//                            Result result = response.getResult();
-//                            String reply = result.getFulfillment().getSpeech();
-//                            ChatMessage chatMessage = new ChatMessage(reply, "bot");
-//                            mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
-//                        }
-//                    }
-//                }.execute(aiRequest);
-//            }
-//        });
-
-// ------------------------------- 뷰에 메세지 띄우기 -------------------------------- //
-
-        // 쿼리 수행 위치
-        Query query = mFirebaseDatabaseReference.child("chat");
+        Query query_chat = mFirebaseDatabaseReference.child("all").child("chat");
 
         // 옵션 - 쿼리 설정 chatmessage 클래스에 결과를 반환한다.
         // configure the ADAPTER by building FirebaseRecyclerOptions
-        FirebaseRecyclerOptions<ChatMessage> options = new FirebaseRecyclerOptions.Builder<ChatMessage>()
-                        .setQuery(query, ChatMessage.class)
-                        .build();
+        FirebaseRecyclerOptions<ChatMessage> options_chat = new FirebaseRecyclerOptions.Builder<ChatMessage>()
+                .setQuery(query_chat, ChatMessage.class)
+                .build();
 
         // 어댑터 - 뷰
         // chat_rec => ViewHolder (for displaying each item)
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage, chat_rec>(options) {
+        mFirebaseAdapter_chat = new FirebaseRecyclerAdapter<ChatMessage, chat_rec>(options_chat) {
             // Allows to remember the last item shown on screen
 //            private int lastPosition = -1;
             @Override
@@ -243,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 holder.next.setVisibility(View.GONE);
                 holder.more.setVisibility(View.GONE);
 
-                //유저가 말할 때
+                // 유저가 말할 때
                 if (model.getName().equals("user")) {
                     holder.rightText.setText(model.getText());
                     holder.rightText.setVisibility(View.VISIBLE);
@@ -252,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //                    holder.rightText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_right));
                 }
 
-                //챗봇이 말할 때
-                else {
+                // 챗봇이 말할 때
+                else if (model.getName().equals("bot")) {
                     //split
                     String chatbot_msg = model.getText();
                     String[] value = chatbot_msg.split("@");
@@ -285,8 +252,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 holder.more.setVisibility(View.GONE);
 
                                 if (!prevEditText.equals("")) {
-//                                    ChatMessage chatMessage = new ChatMessage(prevEditText, "user", ServerValue.TIMESTAMP);
-//                                    mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+                                    ChatMessage chatMessage = new ChatMessage(prevEditText, "user", ServerValue.TIMESTAMP);
+                                    mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage);
 
                                     aiRequest.setQuery(prevEditText);
                                     new AsyncTask<AIRequest, Void, AIResponse>(){
@@ -307,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                                 Result result = response.getResult();
                                                 String reply = result.getFulfillment().getSpeech();
                                                 ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
-                                                mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+                                                mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage);
                                             }
                                         }
                                     }.execute(aiRequest);
@@ -399,6 +366,112 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         }); //quick
                     } //링크 빼내기
                 }
+
+                // 푸시 알람으로 올 때
+                else if (model.getName().equals("pushNotification")) {
+                    //split
+                    String chatbot_msg = model.getText();
+                    String[] value = chatbot_msg.split("@");
+                    int value_length = value.length;
+
+                    if(!value[1].equals("null")) {
+                        holder.leftText.setText(value[1]);
+                    }
+                    else {
+                        holder.leftText.setText(value[0]);
+                    }
+
+                    holder.rightText.setVisibility(View.GONE);
+                    holder.leftText.setVisibility(View.VISIBLE);
+//                    setAnimation(holder.leftText, position);
+//                    holder.leftText.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, anim.slide_chat_left));
+
+                    if(value_length >= 2 && !value[1].equals("null")) {
+                        final Uri uri = Uri.parse(value[0]); //링크만 저장
+                        holder.more.setVisibility(View.VISIBLE);
+                        holder.next.setVisibility(View.GONE);
+
+                        // more: 클릭 시 해당 뉴스의 프리뷰가 나타나도록 함
+                        holder.more.setOnClickListener(new View.OnClickListener() {
+                            //preview 링크 클릭 시 이동
+                            @Override
+                            public void onClick(View v) {
+                                holder.progress.setVisibility(View.VISIBLE);
+                                LinkUtil.getLinkPreview(MainActivity.this, String.valueOf(uri), new GetLinkPreviewListener() {
+                                    @Override
+                                    public void onSuccess(final ChatMessage link) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                holder.progress.setVisibility(View.GONE);
+                                                holder.imgPreviewIv.setVisibility(View.VISIBLE);
+                                                holder.titleTv.setVisibility(View.VISIBLE);
+                                                holder.descTv.setVisibility(View.VISIBLE);
+                                                holder.siteTv.setVisibility(View.VISIBLE);
+                                                holder.previewGroup.setVisibility(View.VISIBLE);
+
+                                                holder.titleTv.setText(link.getTitle() != null ? link.getTitle() : "");
+                                                holder.descTv.setText(link.getDescription() != null ? link.getDescription() : "");
+                                                holder.siteTv.setText(link.getSiteName() != null ? link.getSiteName() : "");
+
+                                                holder.next.setVisibility(View.GONE);
+                                                holder.more.setVisibility(View.GONE);
+
+                                                holder.previewGroup.setOnClickListener(new View.OnClickListener() {
+                                                    //preview 링크 클릭 시 이동
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        // create an intent builder
+                                                        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+                                                        // Begin customizing
+                                                        // set toolbar colors
+                                                        intentBuilder.setToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimaryDark));
+                                                        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(MainActivity.this, color.colorPrimary));
+
+                                                        // set start and exit animations
+                                                        intentBuilder.setStartAnimations( MainActivity.this, anim.slide_in_right, anim.slide_out_left);
+                                                        intentBuilder.setExitAnimations(MainActivity.this, anim.slide_in_left, anim.slide_out_right);
+
+                                                        // build custom tabs intent
+                                                        CustomTabsIntent customTabsIntent = intentBuilder.build();
+                                                        // launch the url
+                                                        customTabsIntent.launchUrl(MainActivity.this, uri);
+                                                    }
+                                                });
+
+                                                if (link.getImageFile() != null)
+                                                    Glide.with(MainActivity.this).load(link.getImageFile()).into(holder.imgPreviewIv);
+                                                else
+                                                    Glide.with(MainActivity.this).load(mipmap.ic_launcher).into(holder.imgPreviewIv);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailed(final Exception e) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                holder.progress.setVisibility(View.GONE);
+                                                holder.imgPreviewIv.setVisibility(View.GONE);
+                                                holder.titleTv.setVisibility(View.GONE);
+                                                holder.descTv.setVisibility(View.GONE);
+                                                holder.siteTv.setVisibility(View.GONE);
+
+                                                holder.next.setVisibility(View.GONE);
+                                                holder.more.setVisibility(View.GONE);
+
+                                                //holder.previewGroup.setVisibility(View.GONE);
+                                                //Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }); //quick
+                    } //링크 빼내기
+                }
             }
 
             @NonNull
@@ -407,40 +480,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 View view = LayoutInflater.from(parent.getContext()).inflate(item_message, parent, false);
                 return new chat_rec(view);
             }
-
-//            private void setAnimation(View viewToAnimate, int position) {
-//                // If the bound view wasn't previously displayed on screen, it's animated
-//                if (position > lastPosition) {
-//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.slide_in_left);
-//                    viewToAnimate.startAnimation(animation);
-//                    lastPosition = position;
-//                }
-//            }
-//
-//            private void setAnimationLeft(View viewToAnimate, int position) {
-//                // If the bound view wasn't previously displayed on screen, it's animated
-//                if (position > lastPosition) {
-//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_chat_left);
-//                    viewToAnimate.startAnimation(animation);
-//                    lastPosition = position;
-//                }
-//            }
-//
-//            private void setAnimationRight(View viewToAnimate, int position) {
-//                // If the bound view wasn't previously displayed on screen, it's animated
-//                if (position > lastPosition) {
-//                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_chat_right);
-//                    viewToAnimate.startAnimation(animation);
-//                    lastPosition = position;
-//                }
-//            }
         };
 
-        // setLayoutManager: 아이템의 배치 방법을 정의함(LinearLayoutManager: 가로/세로)
         mMessageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Attach the ADAPTER to the RecyclerView with the RecyclerView.setAdapter() method
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-// --------------------------------------------------------------------------------------- //
+        mMessageRecyclerView.setAdapter(mFirebaseAdapter_chat);
+
+// ---------------------------------------Remote Config---------------------------------------------- //
 
         //글자수 제한 추가한 부분
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -462,12 +507,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 // ------------------------------- 채팅방 옵션 설정 -------------------------------- //
 
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mFirebaseAdapter_chat.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                int msgCount = mFirebaseAdapter.getItemCount();
+                int msgCount = mFirebaseAdapter_chat.getItemCount();
                 int lastVisiblePosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 
                 if (lastVisiblePosition == -1 ||
@@ -475,16 +520,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 lastVisiblePosition == (positionStart - 1))) {
                     mMessageRecyclerView.scrollToPosition(positionStart);
                 }
-
             }
-        }); mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+        }); mMessageRecyclerView.setAdapter(mFirebaseAdapter_chat);
 
         // 새로운 글이 추가되면 제일 하단으로 포지션 이동
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mFirebaseAdapter_chat.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
+                int friendlyMessageCount = mFirebaseAdapter_chat.getItemCount();
 
                 LinearLayoutManager layoutManager = (LinearLayoutManager) mMessageRecyclerView.getLayoutManager();
                 int lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
@@ -497,7 +541,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-//        // 키보드 올라올 때 RecyclerView의 위치를 마지막 포지션으로 이동
+        // 키보드 올라올 때 RecyclerView의 위치를 마지막 포지션으로 이동
         mMessageRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -505,7 +549,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     v.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mMessageRecyclerView.smoothScrollToPosition(mFirebaseAdapter.getItemCount());
+                            mMessageRecyclerView.smoothScrollToPosition(mFirebaseAdapter_chat.getItemCount());
                         }
                     }, 0);
                 }
@@ -517,15 +561,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onStart() {
         super.onStart();
-        // FirebaseRecyclerAdapter 실시간 쿼리 시작
-        mFirebaseAdapter.startListening();
+        mFirebaseAdapter_chat.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // FirebaseRecyclerAdapter 실시간 쿼리 중지
-        mFirebaseAdapter.stopListening();
+        mFirebaseAdapter_chat.stopListening();
     }
 
     @Override
@@ -534,11 +576,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         String message = result.getResolvedQuery();
         ChatMessage chatMessage0 = new ChatMessage(message, "user", ServerValue.TIMESTAMP);
-        mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage0);
+        mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage0);
 
         String reply = result.getFulfillment().getSpeech();
         ChatMessage chatMessage = new ChatMessage(reply, "bot", ServerValue.TIMESTAMP);
-        mFirebaseDatabaseReference.child("chat").push().setValue(chatMessage);
+        mFirebaseDatabaseReference.child("all").child("chat").push().setValue(chatMessage);
     }
 
     //추가

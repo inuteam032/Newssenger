@@ -12,10 +12,10 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Date;
+
 // Firebase 메시지 수신 (FirebaseMessagingService)
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static final int REQUEST_CODE = 1;
-    private static final int NOTIFICATION_ID = 6578;
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
     @Override
@@ -42,16 +42,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String notificationTitle, String notificationBody) {
+        // Create Id for the individual notification
+        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+
         Intent intent = new Intent(this, MainActivity.class);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
 //        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setAutoCancel(true)   // Automatically delete the notification
-                .setSmallIcon(R.drawable.ic_stat_ic_notification) // Notification icon
+                .setAutoCancel(false)   // Automatically delete the notification
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.newssenger_icon) // Notification icon
                 .setContentIntent(pendingIntent)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody);
@@ -59,7 +63,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(notificationId, notificationBuilder.build());
     }
 
 
