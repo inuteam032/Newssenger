@@ -51,6 +51,7 @@ import com.team032.newssenger.model.ChatMessage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import ai.api.AIDataService;
 import ai.api.AIListener;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
         //initView();
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(layout.action_bar);
 
         //사용자
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             // Allows to remember the last item shown on screen
 //            private int lastPosition = -1;
             @Override
-            protected void onBindViewHolder(final chat_rec holder, int position, @NonNull final ChatMessage model) {
+            protected void onBindViewHolder(@NonNull final chat_rec holder, int position, @NonNull final ChatMessage model) {
                 // preview
                 holder.imgPreviewIv.setVisibility(View.GONE);
                 holder.titleTv.setVisibility(View.GONE);

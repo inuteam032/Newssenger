@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/leftText"
-            android:maxWidth="260dp"
+            android:maxWidth="240dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -28,7 +28,7 @@
     <!--preview add-->
     <RelativeLayout
         android:id="@+id/previewGroup"
-        android:layout_width="280dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/leftText_layout"
         android:layout_marginStart="10dp"
@@ -41,6 +41,7 @@
 
         <ImageView
             android:id="@+id/img_preview_iv"
+            android:maxWidth="230dp"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -49,6 +50,7 @@
 
         <TextView
             android:id="@+id/title_tv"
+            android:maxWidth="230dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -58,6 +60,7 @@
 
         <TextView
             android:id="@+id/desc_tv"
+            android:maxWidth="230dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -68,6 +71,7 @@
 
         <TextView
             android:id="@+id/site_tv"
+            android:maxWidth="230dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -101,7 +105,7 @@
         android:background="@drawable/quick_button"
         android:elevation="2dp"
         android:padding="8dp"
-        android:text="이 뉴스를 더 보고싶어요 😀"
+        android:text="이 뉴스를 더 보고 싶어요 😀"
         android:textColor="#fff" />
 
     <TextView

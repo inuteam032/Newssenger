@@ -5,5 +5,6 @@
     <color name="colorAccent">#9D8189</color>
     <color name="leftText">#FFFFFF</color>
     <color name="rightText">#D8E2DC</color>
+    <color name="quickButton">#94A89A</color>
     <color name="button">#282626</color>
 </resources>
