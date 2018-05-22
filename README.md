@@ -6,3 +6,12 @@ Newssenger is a combination of News and Messenger, a mobile application that giv
 - Android
 - Java
 - Python
+  - Web crawling
+  - Text summarization
+- Firebase
+  - Authentication
+  - Database
+  - Function
+- Dialogflow
+  - Rule-based chatbot
+  - Intent, Training phrases, Responses, and fulfillment for news
