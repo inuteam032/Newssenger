@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(layout.action_bar);
 
-        //로그아웃
+        //사용자
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         mMessageRecyclerView = findViewById(id.message_recycler_view); //=recyclerView

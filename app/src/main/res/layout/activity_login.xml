@@ -9,53 +9,53 @@
     android:gravity="center"
     tools:context=".LoginActivity">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
-        <EditText
-            android:id="@+id/loginActivity_edittext_id"
-            android:hint="EMAIL 주소를 입력하세요"
-            android:inputType="textEmailAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/white">-->
+        <!--<EditText-->
+            <!--android:id="@+id/loginActivity_edittext_id"-->
+            <!--android:hint="EMAIL 주소를 입력하세요"-->
+            <!--android:inputType="textEmailAddress"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
-        <EditText
-            android:id="@+id/loginActivity_edittext_password"
-            android:hint="비밀번호를 입력하세요 (최소 6자)"
-            android:inputType="textPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/white">-->
+        <!--<EditText-->
+            <!--android:id="@+id/loginActivity_edittext_password"-->
+            <!--android:hint="비밀번호를 입력하세요 (최소 6자)"-->
+            <!--android:inputType="textPassword"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
 
-    <Button
-        android:id="@+id/loginActivity_button_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="100dp"
-        android:background="#242222"
-        android:text="로그인"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+    <!--<Button-->
+        <!--android:id="@+id/loginActivity_button_login"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginEnd="12dp"-->
+        <!--android:layout_marginStart="12dp"-->
+        <!--android:layout_marginTop="100dp"-->
+        <!--android:background="#242222"-->
+        <!--android:text="로그인"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textStyle="bold" />-->
 
-    <Button
-        android:layout_marginTop="5dp"
-        android:text="회원가입"
-        android:id="@+id/loginActivity_button_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#242222"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"/>
+    <!--<Button-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:text="회원가입"-->
+        <!--android:id="@+id/loginActivity_button_signup"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="#242222"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textStyle="bold"-->
+        <!--android:layout_marginStart="12dp"-->
+        <!--android:layout_marginEnd="12dp"/>-->
 
 </LinearLayout>

@@ -39,6 +39,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //FirebaseUI - Login
+    implementation 'com.firebaseui:firebase-ui:1.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
 
     //add
     implementation 'com.android.support:recyclerview-v7:27.1.1'
