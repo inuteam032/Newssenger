@@ -131,7 +131,7 @@ public class LinkUtil {
                                 .url(imageLink)
                                 .build();
                         Response response1 = null;
-                        response1 = client.newCall(request).execute();
+                      response1 = client.newCall(request).execute();
                         if (response1.isSuccessful()) {
                             file = new File(context.getCacheDir(), System.currentTimeMillis() + "");
                             FileOutputStream fos = new FileOutputStream(file);

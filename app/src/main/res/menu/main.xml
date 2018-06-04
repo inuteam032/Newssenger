@@ -5,6 +5,10 @@
 
     <item
         android:id="@+id/sign_out_menu"
-        android:title="로그아웃"
+        android:title="✖️"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/bookmark_menu"
+        android:title="📌"
+        app:showAsAction="always" />
 </menu>

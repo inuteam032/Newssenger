@@ -17,6 +17,10 @@ public class ChatMessage {
     private String title, description, link, siteName;
     private File imageFile;
 
+    public ChatMessage(String bookmark_content, String bookmark_url){
+
+    }
+
     public ChatMessage(){
 
     }

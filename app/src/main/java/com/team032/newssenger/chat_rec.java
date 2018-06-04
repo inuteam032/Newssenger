@@ -20,7 +20,7 @@ public class chat_rec extends RecyclerView.ViewHolder  {
     RelativeLayout previewGroup;
 
     //quick
-    TextView next, more;
+    TextView next, more, bookmark;
 
     public chat_rec(View itemView){
         super(itemView);
@@ -39,5 +39,6 @@ public class chat_rec extends RecyclerView.ViewHolder  {
         //quick
         more = (TextView)itemView.findViewById(R.id.more);
         next = (TextView)itemView.findViewById(R.id.next);
+        bookmark = (TextView)itemView.findViewById(R.id.bookmark);
     }
 }

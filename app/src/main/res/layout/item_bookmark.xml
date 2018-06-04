@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/bookmark_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/border"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/bookmark_text"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/book_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="기사 내용" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#9E9E9E" />
+
+            <TextView
+                android:id="@+id/book_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/book_content"
+                android:text="기사 주소" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/delete_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="17dp"
+            android:layout_toRightOf="@id/bookmark_text"
+            android:elevation="4dp">
+
+            <ImageView
+                android:id="@+id/fab_img"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bookmark_delete"
+                android:tint="#fff" />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
