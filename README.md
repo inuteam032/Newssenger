@@ -8,6 +8,7 @@ Newssenger is a combination of News and Messenger, a mobile application that giv
 - Python
   - Web crawling
   - Text summarization
+  - Flask
 - Firebase
   - Authentication
   - Database
